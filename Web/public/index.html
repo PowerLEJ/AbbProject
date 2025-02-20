@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>삼목 게임</title>
+    <style>
+        canvas { background: #f0d9b5; border: 1px solid black; }
+    </style>
+</head>
+<body>
+    <h1>삼목 게임</h1>
+    <canvas id="board" width="450" height="450"></canvas>
+
+    <script>
+        const BOARD_SIZE = 3;
+        const CELL_SIZE = 150;
+        const canvas = document.getElementById("board");
+        const ctx = canvas.getContext("2d");
+
+        let board = Array(3).fill().map(() => Array(3).fill(0)); // 0: 빈칸, 1: 인간, 2: 컴퓨터
+        let turn = 1; // 1: 인간, 2: 컴퓨터
+        let humanMoves = []; // 인간이 선택한 좌표들
+        let computerMoves = []; // 컴퓨터가 선택한 좌표들
+
+        // 보드 그리기
+        function drawBoard() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                for (let j = 0; j < BOARD_SIZE; j++) {
+                    ctx.strokeRect(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                    if (board[i][j] === 1) {
+                        ctx.beginPath();
+                        ctx.arc(i * CELL_SIZE + CELL_SIZE / 2, j * CELL_SIZE + CELL_SIZE / 2, CELL_SIZE / 3, 0, 2 * Math.PI);
+                        ctx.fillStyle = 'black';
+                        ctx.fill();
+                    } else if (board[i][j] === 2) {
+                        ctx.beginPath();
+                        ctx.arc(i * CELL_SIZE + CELL_SIZE / 2, j * CELL_SIZE + CELL_SIZE / 2, CELL_SIZE / 3, 0, 2 * Math.PI);
+                        ctx.fillStyle = 'white';
+                        ctx.fill();
+                    }
+                }
+            }
+        }
+
+        // 게임 종료 체크
+        function checkWinner() {
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                // 가로, 세로 체크
+                if (board[i][0] === board[i][1] && board[i][1] === board[i][2] && board[i][0] !== 0) {
+                    return board[i][0];
+                }
+                if (board[0][i] === board[1][i] && board[1][i] === board[2][i] && board[0][i] !== 0) {
+                    return board[0][i];
+                }
+            }
+            // 대각선 체크
+            if (board[0][0] === board[1][1] && board[1][1] === board[2][2] && board[0][0] !== 0) {
+                return board[0][0];
+            }
+            if (board[0][2] === board[1][1] && board[1][1] === board[2][0] && board[0][2] !== 0) {
+                return board[0][2];
+            }
+
+            // 비김 체크
+            if (board.flat().every(cell => cell !== 0)) {
+                return 0;
+            }
+
+            return null;
+        }
+
+        // 컴퓨터 차례 (랜덤)
+        function makeComputerMove() {
+            let emptyCells = [];
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if (board[i][j] === 0) {
+                        emptyCells.push({ x: i, y: j });
+                    }
+                }
+            }
+            const move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            board[move.x][move.y] = 2; // 컴퓨터 차례
+            computerMoves.push({ x: move.x, y: move.y }); // 컴퓨터의 좌표 추가
+            drawBoard();
+            const winner = checkWinner();
+            if (winner !== null) {
+                // sendMovesToServer(winner);
+                // alert(winner === 1 ? "인간이 승리했습니다!" : (winner === 2 ? "컴퓨터가 승리했습니다!" : "비겼습니다!"));
+            } else {
+                turn = 1; // 이제 인간 차례
+            }
+
+            // 컴퓨터의 좌표를 서버로 전송
+            sendMovesToServer(winner);
+        }
+
+        // 사용자가 클릭한 위치로 이동 (인간 차례)
+        canvas.addEventListener("click", (event) => {
+            if (turn !== 1) return; // 인간 차례일 때만
+            const rect = canvas.getBoundingClientRect();
+            const x = Math.floor((event.clientX - rect.left) / CELL_SIZE);
+            const y = Math.floor((event.clientY - rect.top) / CELL_SIZE);
+
+            if (board[x][y] === 0) {
+                board[x][y] = 1; // 인간 차례
+                humanMoves.push({ x: x, y: y }); // 인간의 좌표 추가
+                drawBoard();
+                const winner = checkWinner();
+                if (winner !== null) {
+                    sendMovesToServer(winner);
+                    // alert(winner === 1 ? "인간이 승리했습니다!" : (winner === 2 ? "컴퓨터가 승리했습니다!" : "비겼습니다!"));
+                } else {
+                    turn = 2; // 이제 컴퓨터 차례
+                    // makeComputerMove(winner);
+
+                    setTimeout(function () {
+                        makeComputerMove(winner);
+                    }, 3000); // 3초
+                }
+            }
+        });
+
+        // 인간과 컴퓨터의 좌표를 서버로 전송
+        function sendMovesToServer(winner) {
+            let humanPos = humanMoves.map(move => `${move.x}${move.y}`).join(',');
+            let computerPos = computerMoves.map(move => `${move.x}${move.y}`).join(',');
+
+            if(winner != null) {
+
+                if(winner == 1 || winner == 0) { computerPos = "99" }
+                console.log(winner);
+
+                setTimeout(function () {
+                    alert(winner === 1 ? "인간이 승리했습니다!" : (winner === 2 ? "컴퓨터가 승리했습니다!" : "비겼습니다!"));
+                    location.reload();
+                }, 3000); // 3초
+
+            }
+
+            fetch(`/move?human=${humanPos}&computer=${computerPos}`)
+                .then(response => response.text())
+                .then(() => {
+                    console.log(`서버로 인간의 좌표: ${humanPos}, 컴퓨터의 좌표: ${computerPos}를 보냈습니다.`);
+                    humanMoves = [];
+                    computerMoves = [];
+                })
+                .catch(error => console.error('서버 오류:', error));
+        }
+
+        drawBoard();
+    </script>
+</body>
+</html>
