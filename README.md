@@ -61,8 +61,8 @@
 
 
 ## Web Node.js  
-![web_01](/images/web/web_01.PNG){: width="100%" height="100%"}{: .center}  
+![web_01](/images/web/web_01.png){: width="100%" height="100%"}{: .center}  
   
-![web_02](/images/web/web_02.PNG){: width="100%" height="100%"}{: .center}  
+![web_02](/images/web/web_02.png){: width="100%" height="100%"}{: .center}  
   
-![web_03](/images/web/web_03.PNG){: width="100%" height="100%"}{: .center}  
+![web_03](/images/web/web_03.png){: width="100%" height="100%"}{: .center}  
