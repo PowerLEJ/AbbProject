@@ -5,9 +5,20 @@
 
 2. 센서 인식을 통해 종류 확인  
 ![002](/images/photo/002.jpg){: width="100%" height="100%"}{: .center}  
+  
+흰색 플라스틱  
+![008](/images/photo/008.jpg){: width="30%" height="30%"}{: .center}  
+  
+금속  
+![009](/images/photo/009.jpg){: width="30%" height="30%"}{: .center}  
+  
+검은색 플라스틱  
+![010](/images/photo/010.jpg){: width="30%" height="30%"}{: .center}  
 
 3. 로봇팔이 흰색 플라스틱과 검은색 플라스틱을 플레이트에 정렬. 금속 플라스틱은 쓰레기통으로 이동.  
 ![003](/images/photo/003.jpg){: width="100%" height="100%"}{: .center}  
+  
+![007](/images/photo/007.jpg){: width="100%" height="100%"}{: .center}  
 
 4. 흰색 플라스틱과 검은색 플라스틱이 5개씩 정렬되면 소켓을 연결하여 게임 시작. 단, 이미 5개가 정렬된 색의 물품이 선택되면 매거진에 다시 넣음.  
 ![004](/images/photo/004.jpg){: width="100%" height="100%"}{: .center}  
